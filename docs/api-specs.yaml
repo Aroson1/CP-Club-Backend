@@ -1,0 +1,746 @@
+openapi: 3.0.3
+info:
+  title: Express API for CP Club
+  version: 1.0.0
+  description: >-
+    This is a REST API application made with Express. It is a part of the CP
+    Club project.
+  contact:
+    name: Alex Gijo
+    url: https://github.com/Aroson1
+servers:
+  - url: http://localhost:3000
+    description: Development server
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      description: Health Endpoint
+      responses:
+        '200':
+          description: Application helath details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uptime:
+                    type: number
+                    format: float
+                    description: >-
+                      Time (in seconds) specifying apllication running from how
+                      long
+                  message:
+                    type: string
+                    description: Status message ok
+                  date:
+                    type: string
+                    format: date-time
+                    description: Current date in ISO format
+  /v1/blogs:
+    post:
+      tags:
+        - v1
+      description: Endpoint to create/add new blog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBlogRequest'
+      responses:
+        '200':
+          description: Blog created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBlogSuccess'
+    get:
+      tags:
+        - v1
+      description: Endpoint to get all blogs with pagination
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of blogs with pagination.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Blog'
+  /v1/events:
+    post:
+      tags:
+        - v1
+      description: Endpoint to create/add new event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventRequest'
+      responses:
+        '201':
+          description: Event created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateEventSuccess'
+    get:
+      tags:
+        - v1
+      description: Endpoint to get all events
+      responses:
+        '200':
+          description: List of events.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+  /v1/events/{eventId}:
+    get:
+      tags:
+        - v1
+      description: Endpoint to get event details by ID
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found.
+    put:
+      tags:
+        - v1
+      description: Endpoint to update event details by ID
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventRequest'
+      responses:
+        '200':
+          description: Event updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found.
+    delete:
+      tags:
+        - v1
+      description: Endpoint to delete event by ID
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event deleted successfully.
+        '404':
+          description: Event not found.
+  /v1/hall-of-fame:
+    post:
+      tags:
+        - v1
+      description: Endpoint to create a new Hall of Fame entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateHallOfFameRequest'
+      responses:
+        '201':
+          description: Hall of Fame entry created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateHallOfFameSuccess'
+    get:
+      tags:
+        - v1
+      description: Endpoint to get all Hall of Fame entries
+      responses:
+        '200':
+          description: List of Hall of Fame entries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HallOfFame'
+  /v1/hall-of-fame/{id}:
+    get:
+      tags:
+        - v1
+      description: Endpoint to get a Hall of Fame entry by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Hall of Fame entry details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HallOfFame'
+        '404':
+          description: Hall of Fame entry not found.
+    put:
+      tags:
+        - v1
+      description: Endpoint to update a Hall of Fame entry by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateHallOfFameRequest'
+      responses:
+        '200':
+          description: Hall of Fame entry updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HallOfFame'
+        '404':
+          description: Hall of Fame entry not found.
+    delete:
+      tags:
+        - v1
+      description: Endpoint to delete a Hall of Fame entry by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Hall of Fame entry deleted successfully.
+        '404':
+          description: Hall of Fame entry not found.
+  /v1/leaderboard:
+    get:
+      tags:
+        - v1
+      description: Get the leaderboard based on sem and year
+      parameters:
+        - in: query
+          name: sem
+          required: true
+          schema:
+            type: string
+            enum:
+              - ODD
+              - EVEN
+        - in: query
+          name: year
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Leaderboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    userName:
+                      type: string
+                    profileImage:
+                      type: string
+                    points:
+                      type: integer
+                    batch:
+                      type: string
+  /v1/leaderboard/:userId:
+    put:
+      tags:
+        - v1
+      description: Update sem points for a user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sem:
+                  type: string
+                  enum:
+                    - ODD
+                    - EVEN
+                year:
+                  type: integer
+                points:
+                  type: integer
+      responses:
+        '200':
+          description: Updated sem points
+  /v1/resources:
+    post:
+      tags:
+        - v1
+      description: Endpoint to create/add new resource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateResourceRequest'
+      responses:
+        '201':
+          description: Resource created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResourceSuccess'
+    get:
+      tags:
+        - v1
+      description: Endpoint to get all resources
+      responses:
+        '200':
+          description: List of resources.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Resource'
+  /v1/resources/{resourceId}:
+    get:
+      tags:
+        - v1
+      description: Endpoint to get resource details by ID
+      parameters:
+        - in: path
+          name: resourceId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Resource details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+        '404':
+          description: Resource not found.
+    put:
+      tags:
+        - v1
+      description: Endpoint to update resource details by ID
+      parameters:
+        - in: path
+          name: resourceId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateResourceRequest'
+      responses:
+        '200':
+          description: Resource updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+        '404':
+          description: Resource not found.
+    delete:
+      tags:
+        - v1
+      description: Endpoint to delete resource by ID
+      parameters:
+        - in: path
+          name: resourceId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Resource deleted successfully.
+        '404':
+          description: Resource not found.
+  /v1/resources/{resourceId}/list:
+    put:
+      tags:
+        - v1
+      description: Endpoint to update the list of resources for a specific resource title
+      parameters:
+        - in: path
+          name: resourceId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  link:
+                    type: string
+      responses:
+        '200':
+          description: Resource list updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+        '404':
+          description: Resource not found.
+  /v1/users:
+    post:
+      tags:
+        - v1
+      description: Endpoint to create/add new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          description: Application health details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserSuccess'
+components:
+  schemas:
+    Blog:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The blog's title.
+          example: Facing a challenge is kind of a turn-on for an easy rider
+        image:
+          type: string
+          description: The URL of the blog's main image.
+          example: https://placehold.co/600x400@2x.png
+        authorImage:
+          type: string
+          description: The URL of the author's image.
+          example: https://placehold.co/600x400@2x.png
+        authorName:
+          type: string
+          description: The author's name.
+          example: ME
+        date:
+          type: string
+          format: date
+          description: The date of the blog post.
+          example: '2024-07-25'
+        comments:
+          type: integer
+          description: The number of comments.
+          example: 50
+        views:
+          type: integer
+          description: The number of views.
+          example: 35
+        content:
+          type: string
+          description: The main content of the blog post.
+          example: string
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags associated with the blog post.
+          example:
+            - Design
+            - Development
+            - Info
+    CreateBlogRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        image:
+          type: string
+        authorImage:
+          type: string
+        authorName:
+          type: string
+        date:
+          type: string
+          format: date
+        comments:
+          type: integer
+        views:
+          type: integer
+        content:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+    CreateBlogSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Flag stating status of API call
+          example: true
+        body:
+          $ref: '#/components/schemas/Blog'
+    Event:
+      type: object
+      properties:
+        blogId:
+          type: integer
+          description: The ID of the related blog.
+          example: 23
+        title:
+          type: string
+          description: The event's title.
+          example: Event Title 1
+        date:
+          type: string
+          format: date
+          description: The event's date.
+          example: 20/10/2130
+        imageUrl:
+          type: string
+          description: The URL of the event's image.
+          example: >-
+            https://img.freepik.com/free-photo/abstract-surface-textures-white-concrete-stone-wall_74190-8189.jpg
+    CreateEventRequest:
+      type: object
+      properties:
+        blogId:
+          type: integer
+        title:
+          type: string
+        date:
+          type: string
+          format: date
+        imageUrl:
+          type: string
+    CreateEventSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Flag stating status of API call
+          example: true
+        body:
+          $ref: '#/components/schemas/Event'
+    HallOfFame:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The Hall of Fame entry ID.
+          example: 1
+        userId:
+          type: integer
+          description: The ID of the user associated with this entry.
+          example: 1
+        title:
+          type: string
+          description: The title of the Hall of Fame entry.
+          example: Outstanding Achievement in Programming
+        description:
+          type: string
+          description: A description of the achievement.
+          example: >-
+            Developed a revolutionary algorithm that significantly improved
+            system performance.
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            email:
+              type: string
+    CreateHallOfFameRequest:
+      type: object
+      properties:
+        userId:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+    CreateHallOfFameSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Flag stating status of API call
+          example: true
+        body:
+          $ref: '#/components/schemas/HallOfFame'
+    Resource:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The resource ID.
+          example: 1
+        resourceTitle:
+          type: string
+          description: The title of the resource.
+          example: Dynamic Programming
+        listOfResources:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+                description: The title of the individual resource.
+              link:
+                type: string
+                description: The link to the individual resource.
+    CreateResourceRequest:
+      type: object
+      properties:
+        resourceTitle:
+          type: string
+        listOfResources:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+              link:
+                type: string
+    CreateResourceSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Flag stating status of API call
+          example: true
+        body:
+          $ref: '#/components/schemas/Resource'
+    User:
+      type: object
+      properties:
+        userName:
+          type: string
+          description: The user's name.
+          example: John Doe
+        email:
+          type: string
+          description: The user's email address.
+          example: john.doe@example.com
+        rollNumber:
+          type: string
+          description: The user's roll number.
+          example: 123456
+        batch:
+          type: string
+          description: The user's batch.
+          example: 2022
+        profileImage:
+          type: string
+          description: The URL of the user's profile image.
+          example: https://placehold.co/600x400
+    CreateUserRequest:
+      type: object
+      properties:
+        userName:
+          type: string
+          description: The user's name.
+          example: John Doe
+        email:
+          type: string
+          description: The user's email address.
+          example: john.doe@example.com
+        rollNumber:
+          type: string
+          description: The user's roll number.
+          example: 123456
+        batch:
+          type: string
+          description: The user's batch.
+          example: 2022
+        profileImage:
+          type: string
+          description: The URL of the user's profile image.
+          example: https://placehold.co/600x400
+    CreateUserSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Flag stating status of API call
+          example: true
+        body:
+          $ref: '#/components/schemas/User'
+tags: []
