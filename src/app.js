@@ -6,6 +6,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { fileURLToPath } from 'url';
 import swaggerUi from 'swagger-ui-express';
+import session from 'express-session';
+import passport from './config/passport.js';
 
 import { badJsonHandler, notFoundHandler, errorHandler } from './middlewares/index.js';
 import { Logger } from './config/logger.js';
@@ -26,6 +28,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.options('*', cors());
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(morgan(
   'combined',

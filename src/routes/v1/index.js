@@ -6,6 +6,8 @@ import leaderboardRoute from './leaderboard.route.js';
 import eventsRoute from './event.route.js';
 import resourcesRoute from './resource.route.js';
 import hallOfFameRoute from './hallOfFame.route.js';
+import authRoute from './auth.route.js';
+
 
 const router = express.Router();
 
@@ -15,6 +17,7 @@ router.use('/leaderboard', leaderboardRoute);
 router.use('/events', eventsRoute);
 router.use('/resources', resourcesRoute);
 router.use('/hall-of-fame', hallOfFameRoute);
+router.use('/auth', authRoute);
 
 
 

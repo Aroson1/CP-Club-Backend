@@ -9,10 +9,20 @@ export default (sequelize, DataTypes) => {
         autoIncrement: true,
       },
       userName: DataTypes.STRING,
-      email: DataTypes.STRING,
+      email: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+      },
       rollNumber: DataTypes.STRING,
       batch: DataTypes.STRING,
       profileImage: DataTypes.STRING,
+      googleId: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: true,
+      },
+      displayName: DataTypes.STRING,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },
@@ -28,5 +38,6 @@ export default (sequelize, DataTypes) => {
       targetId: "id",
     });
   };
+
   return User;
 };

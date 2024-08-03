@@ -115,4 +115,5 @@ yarn.lock
 
 doc/
 tests/
-src/client.code-workspace
+src/cp-club.code-workspace
+scheme.rb
