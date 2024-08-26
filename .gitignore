@@ -117,3 +117,4 @@ doc/
 tests/
 src/cp-club.code-workspace
 scheme.rb
+.vercel

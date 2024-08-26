@@ -5,12 +5,13 @@ const namespace = createNamespace('cp-club');
 Sequelize.useCLS(namespace);
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASS,
+  // process.env.DB_NAME,
+  // process.env.DB_USER,
+  // process.env.DB_PASS,
+  process.env.DB_URL,
   {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
+    // host: process.env.DB_HOST,
+    // port: process.env.DB_PORT,
     dialect: 'postgres',
     logging: false,
     isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
