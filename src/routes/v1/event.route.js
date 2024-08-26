@@ -9,6 +9,10 @@ import {
   deleteEvent,
 } from "../../controllers/event.controller.js";
 import { addEventSchema } from "../../validations/events-request.schema.js";
+import authorizeAdmin from "../../middlewares/authorizationMiddleware.js"; 
+
+const router = express.Router();
+const { validate } = new Validator();
 
 /**
  * @openapi
@@ -59,9 +63,6 @@ import { addEventSchema } from "../../validations/events-request.schema.js";
  *           $ref: '#/components/schemas/Event'
  */
 
-const router = express.Router();
-const { validate } = new Validator();
-
 /**
  * @openapi
  * /v1/events:
@@ -99,7 +100,7 @@ const { validate } = new Validator();
  */
 router
   .route("/")
-  .post(validate({ body: addEventSchema }), addEvent)
+  .post(authorizeAdmin, validate({ body: addEventSchema }), addEvent) 
   .get(getEvents);
 
 /**
@@ -170,7 +171,7 @@ router
 router
   .route("/:eventId")
   .get(getEvent)
-  .put(validate({ body: addEventSchema }), updateEvent)
-  .delete(deleteEvent);
+  .put(authorizeAdmin, validate({ body: addEventSchema }), updateEvent) 
+  .delete(authorizeAdmin, deleteEvent); 
 
 export default router;

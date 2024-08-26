@@ -2,13 +2,21 @@ import db from "../models/index.js";
 
 const { User, SemPoint } = db.db;
 
-const updatePoints = async (userId, sem, year, points) => {
+const updatePoints = async (userId, sem, year, chartData) => {
   let semPoint = await SemPoint.findOne({ where: { userId, sem, year } });
   if (semPoint) {
-    semPoint.points = points;
+    semPoint.chartData = chartData;
+    semPoint.points = Object.values(chartData).reduce(
+      (sum, point) => sum + point,
+      0
+    );
     await semPoint.save();
   } else {
-    semPoint = await SemPoint.create({ userId, sem, year, points });
+    let points = Object.values(chartData).reduce(
+      (sum, point) => sum + point,
+      0
+    );
+    semPoint = await SemPoint.create({ userId, sem, year, chartData, points });
   }
   return semPoint;
 };
@@ -23,7 +31,9 @@ const getLeaderboardBySemAndYear = async (sem, year) => {
     userName: semPoint.User.userName,
     profileImage: semPoint.User.profileImage,
     points: semPoint.points,
+    chartData: semPoint.chartData,
     batch: semPoint.User.batch,
+    id: semPoint.User.id,
   }));
 };
 

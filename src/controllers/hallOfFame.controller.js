@@ -1,59 +1,49 @@
-import httpStatus from "http-status";
-
-import * as errors from "../utils/api-error.js";
-import * as response from "../middlewares/response-handler.js";
-import {
-  findAll,
-  findById,
-  create,
-  update,
-  remove,
-} from "../services/hallOfFame.service.js";
+import httpStatus from 'http-status';
+import * as response from '../middlewares/response-handler.js';
+import * as errors from '../utils/api-error.js';
+import { findAll, findById, create, updateById, deleteById } from '../services/hallOfFame.service.js';
 
 const responseHandler = response.default;
 const { NotFoundError } = errors.default;
 
-const addHallOfFame = async (req, res) => {
-  const hallOfFameDetails = await create(req.body);
-  res.status(httpStatus.CREATED).send(responseHandler(hallOfFameDetails));
+const getHallOfFameEntries = async (req, res) => {
+  const entries = await findAll();
+  res.status(httpStatus.OK).send(responseHandler(entries));
 };
 
-const getHallOfFame = async (req, res) => {
-  const hallOfFame = await findAll();
-  res.status(httpStatus.OK).send(responseHandler(hallOfFame));
-};
-
-const getHallOfFameMember = async (req, res) => {
-  const hallOfFame = await findById(req.params.id);
-  if (!hallOfFame) {
+const getHallOfFameEntry = async (req, res) => {
+  const entry = await findById(req.params.id);
+  if (!entry) {
     throw new NotFoundError();
   }
-
-  res.status(httpStatus.OK).send(responseHandler(hallOfFame));
+  res.status(httpStatus.OK).send(responseHandler(entry));
 };
 
-const updateHallOfFame = async (req, res) => {
-  const hallOfFame = await update(req.params.id, req.body);
-  if (!hallOfFame) {
-    throw new NotFoundError();
-  }
-
-  res.status(httpStatus.OK).send(responseHandler(hallOfFame));
+const createHallOfFameEntry = async (req, res) => {
+  const entry = await create(req.body);
+  res.status(httpStatus.CREATED).send(responseHandler(entry));
 };
 
-const deleteHallOfFame = async (req, res) => {
-  const success = await remove(req.params.id);
-  if (!success) {
+const updateHallOfFameEntry = async (req, res) => {
+  const updatedEntry = await updateById(req.params.id, req.body);
+  if (!updatedEntry) {
     throw new NotFoundError();
   }
+  res.status(httpStatus.OK).send(responseHandler(updatedEntry));
+};
 
+const deleteHallOfFameEntry = async (req, res) => {
+  const deleted = await deleteById(req.params.id);
+  if (!deleted) {
+    throw new NotFoundError();
+  }
   res.status(httpStatus.NO_CONTENT).send();
 };
 
 export {
-  addHallOfFame,
-  getHallOfFame,
-  getHallOfFameMember,
-  updateHallOfFame,
-  deleteHallOfFame,
+  getHallOfFameEntries,
+  getHallOfFameEntry,
+  createHallOfFameEntry,
+  updateHallOfFameEntry,
+  deleteHallOfFameEntry,
 };

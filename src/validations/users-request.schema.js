@@ -16,15 +16,18 @@ const addUserSchema = {
     profileImage: {
       type: "string",
     },
+    role: {
+      type: "string",
+    },
   },
   required: [
-    "userName",
-    "email",
-    // 'rollNumber',
-    // 'batch',
-    "profileImage",
+    // "userName",
+    // "email",
+    // // 'rollNumber',
+    // // 'batch',
+    // "profileImage",
   ],
-  additionalProperties: false,
+  additionalProperties: true,
 };
 
 export { addUserSchema };

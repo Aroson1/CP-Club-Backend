@@ -1,5 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
+import httpStatus from "http-status";
 
 const router = Router();
 
@@ -7,6 +8,7 @@ router.get(
   "/google",
   passport.authenticate("google", {
     scope: ["profile", "email"],
+    session: false, 
   })
 );
 
@@ -14,11 +16,12 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     failureRedirect: "/login",
-    // successRedirect: "/login-done",
+    session: false, 
   }),
   (req, res) => {
     const user = req.user;
-    res.send(user);
+    
+    res.status(httpStatus.OK).json(user);
   }
 );
 

@@ -8,11 +8,16 @@ export default (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      userId: {
-        type: DataTypes.INTEGER,
+      name: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
       title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      
+      image: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -20,26 +25,16 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
     },
     {
-      tableName: "hall_of_fame",
+      tableName: "hallOfFame",
       underscored: true,
       name: {
         singular: "hallOfFame",
-        plural: "hallOfFame",
+        plural: "hallOfFames",
       },
     }
   );
-
-  HallOfFame.associate = (models) => {
-    HallOfFame.belongsTo(models.User, {
-      foreignKey: "userId",
-      as: "user",
-      targetKey: "id",
-    });
-  };
 
   return HallOfFame;
 };

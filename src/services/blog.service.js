@@ -4,6 +4,8 @@ const { Blog } = db.db;
 
 const findAll = async () => Blog.findAll();
 
+const getTotalBlogsCount = async () => Blog.count();
+
 const findById = async (blogId) =>
   Blog.findOne({
     where: { id: blogId },
@@ -31,9 +33,31 @@ const remove = async (blogId) => {
 const findList = async (page = 1, limit = 10) => {
   const offset = (page - 1) * limit;
   return Blog.findAll({
-    attributes: ["title", "image", "authorImage", "authorName", "date", "tags"],
+    attributes: [
+      "title",
+      "image",
+      "authorImage",
+      "authorName",
+      "date",
+      "tags",
+      "id",
+    ],
     limit,
     offset,
+  });
+};
+
+const getBlogsForAdmin = async () => {
+  return Blog.findAll({
+    attributes: [
+      "title",
+      "image",
+      "authorImage",
+      "authorName",
+      "date",
+      "tags",
+      "id",
+    ],
   });
 };
 
@@ -55,4 +79,6 @@ export {
   remove,
   findList,
   getBlogAndIncrementView,
+  getTotalBlogsCount,
+  getBlogsForAdmin,
 };

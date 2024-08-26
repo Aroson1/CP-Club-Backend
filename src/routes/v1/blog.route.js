@@ -4,12 +4,15 @@ import { Validator } from "express-json-validator-middleware";
 import {
   addBlog,
   getBlogs,
+  getBlogContent,
   getBlog,
   updateBlog,
   deleteBlog,
   getBlogList,
+  getAdminBlogs,
 } from "../../controllers/blog.controller.js";
 import { addBlogSchema } from "../../validations/blogs-request.schema.js";
+import authorizeAdmin from "../../middlewares/authorizationMiddleware.js";
 
 const router = express.Router();
 const { validate } = new Validator();
@@ -147,13 +150,17 @@ const { validate } = new Validator();
  */
 router
   .route("/")
-  .post(validate({ body: addBlogSchema }), addBlog)
+  .post(authorizeAdmin, validate({ body: addBlogSchema }), addBlog) 
   .get(getBlogList);
 
 router
   .route("/:blogId")
   .get(getBlog)
-  .put(validate({ body: addBlogSchema }), updateBlog)
-  .delete(deleteBlog);
+  .put(authorizeAdmin, validate({ body: addBlogSchema }), updateBlog) 
+  .delete(authorizeAdmin, deleteBlog); 
+
+router.route("/content/:blogId").get(getBlogContent);
+
+router.route("/admin/:blogId").get(getAdminBlogs);
 
 export default router;

@@ -1,14 +1,17 @@
-import express from "express";
-import { Validator } from "express-json-validator-middleware";
+import express from 'express';
+import { Validator } from 'express-json-validator-middleware';
 
 import {
-  addHallOfFame,
-  getHallOfFame,
-  getHallOfFameMember,
-  updateHallOfFame,
-  deleteHallOfFame,
-} from "../../controllers/hallOfFame.controller.js";
-import { hallOfFameSchema } from "../../validations/hallOfFame-request.schema.js";
+  getHallOfFameEntries,
+  getHallOfFameEntry,
+  createHallOfFameEntry,
+  updateHallOfFameEntry,
+  deleteHallOfFameEntry,
+} from '../../controllers/hallOfFame.controller.js';
+import authorizeAdmin from '../../middlewares/authorizationMiddleware.js'; 
+
+const router = express.Router();
+const { validate } = new Validator();
 
 /**
  * @openapi
@@ -19,125 +22,102 @@ import { hallOfFameSchema } from "../../validations/hallOfFame-request.schema.js
  *       properties:
  *         id:
  *           type: integer
- *           description: The Hall of Fame entry ID.
+ *           description: The ID of the Hall of Fame entry.
  *           example: 1
- *         userId:
- *           type: integer
- *           description: The ID of the user associated with this entry.
- *           example: 1
+ *         name:
+ *           type: string
+ *           description: The name of the individual.
+ *           example: John Doe
  *         title:
  *           type: string
- *           description: The title of the Hall of Fame entry.
- *           example: Outstanding Achievement in Programming
+ *           description: The title of the individual.
+ *           example: Software Engineer
+ *         company:
+ *           type: string
+ *           description: The company where the individual works.
+ *           example: Google
+ *         image:
+ *           type: string
+ *           description: The URL of the individual's image.
+ *           example: https://i.imgur.com/hczKIze.jpg
  *         description:
  *           type: string
- *           description: A description of the achievement.
- *           example: Developed a revolutionary algorithm that significantly improved system performance.
- *         user:
- *           type: object
- *           properties:
- *             id:
- *               type: integer
- *             name:
- *               type: string
- *             email:
- *               type: string
- *
- *     CreateHallOfFameRequest:
- *       type: object
- *       properties:
- *         userId:
- *           type: integer
- *         title:
- *           type: string
- *         description:
- *           type: string
- *
- *     CreateHallOfFameSuccess:
- *       type: object
- *       properties:
- *         success:
- *           type: boolean
- *           description: Flag stating status of API call
- *           example: true
- *         body:
- *           $ref: '#/components/schemas/HallOfFame'
+ *           description: A description of the individual's achievements.
+ *           example: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore magna aliqua.
  */
-
-const router = express.Router();
-const { validate } = new Validator();
 
 /**
  * @openapi
- * /v1/hall-of-fame:
- *   post:
- *     tags:
- *       - v1
- *     description: Endpoint to create a new Hall of Fame entry
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/CreateHallOfFameRequest'
- *     responses:
- *       201:
- *         description: Hall of Fame entry created successfully.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CreateHallOfFameSuccess'
- *
+ * /v1/hallOfFame:
  *   get:
  *     tags:
  *       - v1
- *     description: Endpoint to get all Hall of Fame entries
+ *     description: Retrieve all Hall of Fame entries.
  *     responses:
  *       200:
- *         description: List of Hall of Fame entries.
+ *         description: A list of Hall of Fame entries.
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/HallOfFame'
- */
-router
-  .route("/")
-  .post(validate({ body: hallOfFameSchema }), addHallOfFame)
-  .get(getHallOfFame);
-
-/**
- * @openapi
- * /v1/hall-of-fame/{id}:
- *   get:
+ *
+ *   post:
  *     tags:
  *       - v1
- *     description: Endpoint to get a Hall of Fame entry by ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
+ *     description: Create a new Hall of Fame entry.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/HallOfFame'
  *     responses:
- *       200:
- *         description: Hall of Fame entry details.
+ *       201:
+ *         description: Successfully created a new Hall of Fame entry.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/HallOfFame'
- *       404:
- *         description: Hall of Fame entry not found.
+ */
+
+router
+  .route('/')
+  .get(getHallOfFameEntries)
+  .post(authorizeAdmin, createHallOfFameEntry); 
+
+/**
+ * @openapi
+ * /v1/hallOfFame/{id}:
+ *   get:
+ *     tags:
+ *       - v1
+ *     description: Retrieve a specific Hall of Fame entry by ID.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: The ID of the Hall of Fame entry.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: A Hall of Fame entry.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HallOfFame'
  *
  *   put:
  *     tags:
  *       - v1
- *     description: Endpoint to update a Hall of Fame entry by ID
+ *     description: Update a specific Hall of Fame entry by ID.
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
  *         required: true
+ *         description: The ID of the Hall of Fame entry.
  *         schema:
  *           type: integer
  *     requestBody:
@@ -145,37 +125,35 @@ router
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CreateHallOfFameRequest'
+ *             $ref: '#/components/schemas/HallOfFame'
  *     responses:
  *       200:
- *         description: Hall of Fame entry updated successfully.
+ *         description: Successfully updated the Hall of Fame entry.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/HallOfFame'
- *       404:
- *         description: Hall of Fame entry not found.
  *
  *   delete:
  *     tags:
  *       - v1
- *     description: Endpoint to delete a Hall of Fame entry by ID
+ *     description: Delete a specific Hall of Fame entry by ID.
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
  *         required: true
+ *         description: The ID of the Hall of Fame entry.
  *         schema:
  *           type: integer
  *     responses:
  *       204:
- *         description: Hall of Fame entry deleted successfully.
- *       404:
- *         description: Hall of Fame entry not found.
+ *         description: Successfully deleted the Hall of Fame entry.
  */
+
 router
-  .route("/:id")
-  .get(getHallOfFameMember)
-  .put(validate({ body: hallOfFameSchema }), updateHallOfFame)
-  .delete(deleteHallOfFame);
+  .route('/:id')
+  .get(getHallOfFameEntry)
+  .put(authorizeAdmin, updateHallOfFameEntry) 
+  .delete(authorizeAdmin, deleteHallOfFameEntry); 
 
 export default router;

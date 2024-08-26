@@ -6,7 +6,7 @@
   "exports": "./src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "local": "nodemon src/server.js",
+    "server": "nodemon src/server.js",
     "test": "NODE_ENV=test mocha tests/*  -r dotenv/config --timeout 1000 --recursive --exit",
     "migration": "npx sequelize-cli db:migrate",
     "migration:undo": "npx sequelize-cli db:migrate:undo",
@@ -32,6 +32,7 @@
     "helmet": "^7.1.0",
     "http-status": "^1.7.4",
     "js-yaml": "^4.1.0",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",

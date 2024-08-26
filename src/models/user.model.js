@@ -22,6 +22,11 @@ export default (sequelize, DataTypes) => {
         unique: true,
         allowNull: true,
       },
+      role: {
+        type: DataTypes.STRING,
+        defaultValue: "USER",
+      },
+      refreshToken: DataTypes.STRING,
       displayName: DataTypes.STRING,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,

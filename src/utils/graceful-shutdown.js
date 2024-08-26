@@ -1,6 +1,6 @@
 const gracefulShutdown = async server => {
   try {
-    // await sequelize.close();
+    await sequelize.close();
     console.info('Closed database connection!');
     server.close();
     process.exit();

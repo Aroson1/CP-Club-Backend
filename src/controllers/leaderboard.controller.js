@@ -6,8 +6,8 @@ const responseHandler = response.default;
 
 const updateSemPoints = async (req, res) => {
   const { userId } = req.params;
-  const { sem, year, points } = req.body;
-  const updatedSemPoints = await updatePoints(userId, sem, year, points);
+  const { sem, year, chartData } = req.body;
+  const updatedSemPoints = await updatePoints(userId, sem, year, chartData);
   res.status(httpStatus.OK).send(responseHandler(updatedSemPoints));
 };
 

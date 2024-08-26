@@ -13,6 +13,10 @@ import {
   addResourceSchema,
   updateResourceListSchema,
 } from "../../validations/resources-request.schema.js";
+import authorizeAdmin from "../../middlewares/authorizationMiddleware.js"; 
+
+const router = express.Router();
+const { validate } = new Validator();
 
 /**
  * @openapi
@@ -67,9 +71,6 @@ import {
  *           $ref: '#/components/schemas/Resource'
  */
 
-const router = express.Router();
-const { validate } = new Validator();
-
 /**
  * @openapi
  * /v1/resources:
@@ -107,7 +108,7 @@ const { validate } = new Validator();
  */
 router
   .route("/")
-  .post(validate({ body: addResourceSchema }), addResource)
+  .post(authorizeAdmin, validate({ body: addResourceSchema }), addResource) 
   .get(getResources);
 
 /**
@@ -178,8 +179,8 @@ router
 router
   .route("/:resourceId")
   .get(getResource)
-  .put(validate({ body: addResourceSchema }), updateResource)
-  .delete(deleteResource);
+  .put(authorizeAdmin, validate({ body: addResourceSchema }), updateResource) 
+  .delete(authorizeAdmin, deleteResource); 
 
 /**
  * @openapi
@@ -219,6 +220,10 @@ router
  */
 router
   .route("/:resourceId/list")
-  .put(validate({ body: updateResourceListSchema }), updateResourcesList);
+  .put(
+    authorizeAdmin,
+    validate({ body: updateResourceListSchema }),
+    updateResourcesList
+  ); 
 
 export default router;

@@ -1,18 +1,13 @@
-const hallOfFameSchema = {
-    type: "object",
-    properties: {
-      userId: {
-        type: "integer",
-      },
-      title: {
-        type: "string",
-      },
-      description: {
-        type: "string",
-      },
-    },
-    required: ["userId", "title", "description"],
-    additionalProperties: false,
-  };
-  
-  export { hallOfFameSchema };
+const addHallOfFameSchema = {
+  type: "object",
+  properties: {
+    name: { type: "string" },
+    title: { type: "string" },
+    image: { type: "string" },
+    description: { type: "string" },
+  },
+  required: ["name", "title", "image", "description"],
+  additionalProperties: false,
+};
+
+export { addHallOfFameSchema };

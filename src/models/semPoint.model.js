@@ -29,6 +29,10 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      chartData: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },
