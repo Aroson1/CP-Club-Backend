@@ -1,7 +1,11 @@
-import express from 'express';
+import express from "express";
 
-import { updateSemPoints, getLeaderboard } from '../../controllers/leaderboard.controller.js';
-import authorizeAdmin from '../../middlewares/authorizationMiddleware.js'; 
+import {
+  updateSemPoints,
+  getLeaderboard,
+  updateMultipleSemPoints,
+} from "../../controllers/leaderboard.controller.js";
+import authorizeAdmin from "../../middlewares/authorizationMiddleware.js";
 
 const router = express.Router();
 
@@ -73,10 +77,10 @@ const router = express.Router();
  *         description: Updated sem points
  */
 
-router.route('/').get(getLeaderboard);
+router.route("/").get(getLeaderboard);
 
-router
-  .route('/:userId')
-  .put(authorizeAdmin, updateSemPoints); 
+router.route("/updateMultiple").put(authorizeAdmin, updateMultipleSemPoints);
+
+router.route("/:userId").put(authorizeAdmin, updateSemPoints);
 
 export default router;
