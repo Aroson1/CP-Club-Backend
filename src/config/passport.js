@@ -28,6 +28,7 @@ passport.use(
             profileImage: profile.photos[0].value,
             googleId: profile.id,
             displayName: profile.displayName,
+            refreshToken: refreshToken,
           });
         }
 

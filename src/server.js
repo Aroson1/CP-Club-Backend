@@ -30,7 +30,7 @@ app.on("error", (appErr, appCtx) => {
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", async (err) => {
-  logger.error(chalk.bgRed("UNHANDLED REJECTION! Shutting down..."));
+  logger.error(chalk.bgRed("UNHANDLED REJECTION! Might have to shut down..."));
   logger.error(err.name, err.message);
   console.log(JSON.stringify(err.stack));
 
@@ -39,7 +39,7 @@ process.on("unhandledRejection", async (err) => {
 
 // Handle uncaught exceptions
 process.on("uncaughtException", async (uncaughtExc) => {
-  logger.error(chalk.bgRed("UNCAUGHT EXCEPTION! Shutting down..."));
+  logger.error(chalk.bgRed("UNCAUGHT EXCEPTION! Might have to shut down..."));
   logger.error(`UncaughtException Error: ${uncaughtExc}`);
   logger.error(`UncaughtException Stack: ${JSON.stringify(uncaughtExc.stack)}`);
 
@@ -49,7 +49,7 @@ process.on("uncaughtException", async (uncaughtExc) => {
 // Graceful shutdown on SIGINT and SIGTERM signals
 ["SIGINT", "SIGTERM"].forEach((signal) => {
   process.on(signal, async () => {
-    logger.warn(`Received ${signal} signal. Shutting down...`);
+    logger.warn(`Received ${signal} signal. Might have to shut down...`);
     await gracefulShutdown(server);
   });
 });
